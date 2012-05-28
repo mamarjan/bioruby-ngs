@@ -43,8 +43,7 @@ module Bio
         out.write columns.join("\t")+"\n"
         klass.find(:all).each do |output|
           records = output.attributes
-          values = []
-          columns.each {|c| values << records[c]}
+          values = columns.map {|c| records[c]}
           out.write values.join("\t")+"\n"
         end
       end

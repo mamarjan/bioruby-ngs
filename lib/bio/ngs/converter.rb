@@ -34,9 +34,9 @@ module Bio
           end
         end
 
-        # Return each line converted in fastq, is a line is not valid
-        # because is not good enough that line will return a nil
-        # rember to remove the nil values if you are building an array    
+        # Return each line converted to fastq. If a line is not valid
+        # because it is not good enough, conversion of that line will return nil.
+        # Remember to remove the nil values if you are building an array.
         # TODO: benchmark the performances, I suspect this is not ooptimized 
         def to_fastq(stats=false)
           if (type.nil?)            

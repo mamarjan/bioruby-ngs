@@ -54,47 +54,51 @@ module Bio
             @buffer.lines do |line|
               qseq_line_array = line.split
               read  = (send "qseq2fastq_#{type}", qseq_line_array)
-              total += 1
-              if read
-                passed+=1
-                bases_passed_b_quality += qseq_line_array[9].scan("B").size
-                bases_passed_N += qseq_line_array[9].scan("N").size
-                bases_passed_total += qseq_line_array[9].size                
-              else
-                rejected+=1
-                bases_rejected_b_quality += qseq_line_array[9].scan("B").size
-                bases_rejected_N += qseq_line_array[9].scan("N").size
-                bases_rejected_total += qseq_line_array[9].size
+              if stats
+                total += 1
+                if read
+                  passed+=1
+                  bases_passed_b_quality += qseq_line_array[9].scan("B").size
+                  bases_passed_N += qseq_line_array[9].scan("N").size
+                  bases_passed_total += qseq_line_array[9].size                
+                else
+                  rejected+=1
+                  bases_rejected_b_quality += qseq_line_array[9].scan("B").size
+                  bases_rejected_N += qseq_line_array[9].scan("N").size
+                  bases_rejected_total += qseq_line_array[9].size
+                end
               end
               yield read
             end
-            @stats={:reads_total=>total,
-              :reads_passed=>passed,
-              :reads_rejected=>rejected,
-              :bases_passed_total => bases_passed_total,
-              :bases_rejected_total => bases_rejected_total,
-              :bases_passed_with_b_quality => bases_passed_b_quality,
-              :bases_rejected_with_b_quality => bases_rejected_b_quality,
-              :bases_passed_with_n => bases_passed_N,
-              :bases_rejected_with_n => bases_rejected_N}
+            if stats
+              @stats={:reads_total=>total,
+                :reads_passed=>passed,
+                :reads_rejected=>rejected,
+                :bases_passed_total => bases_passed_total,
+                :bases_rejected_total => bases_rejected_total,
+                :bases_passed_with_b_quality => bases_passed_b_quality,
+                :bases_rejected_with_b_quality => bases_rejected_b_quality,
+                :bases_passed_with_n => bases_passed_N,
+                :bases_rejected_with_n => bases_rejected_N}
             end
           end
+        end
 
-          # Return the reads in fastq from a paired-end read dataset
-          # qseq_line is an Array  of strings generated from raw line of qseq file.
-          def qseq2fastq_pe(qseq)
-            #          qseq = qseq_line.split #logic here
-            "@#{qseq[0]}:#{qseq[2]}:#{qseq[3]}:#{qseq[4]}:#{qseq[5]}#0/#{qseq[7]}\n#{qseq[8].gsub(/\./,'N')}\n+\n#{qseq[9]}" if qseq[10]=="1"
-          end
+        # Return the reads in fastq from a paired-end read dataset
+        # qseq_line is an Array  of strings generated from raw line of qseq file.
+        def qseq2fastq_pe(qseq)
+          #          qseq = qseq_line.split #logic here
+          "@#{qseq[0]}:#{qseq[2]}:#{qseq[3]}:#{qseq[4]}:#{qseq[5]}#0/#{qseq[7]}\n#{qseq[8].gsub(/\./,'N')}\n+\n#{qseq[9]}" if qseq[10]=="1"
+        end
 
-          # Return the reads in fastq from a single read dataset
-          # qseq_line is an Array  of strings generated from raw line of qseq file.
-          def qseq2fastq_se(qseq)
-            #         qseq = qseq_line.split #logic here
-            "@#{qseq[0]}:#{qseq[2]}:#{qseq[3]}:#{qseq[4]}:#{qseq[5]}#0/\n#{qseq[8].gsub(/\./,'N')}\n+\n#{qseq[9]}" if qseq[10]=="1"
-          end
+        # Return the reads in fastq from a single read dataset
+        # qseq_line is an Array  of strings generated from raw line of qseq file.
+        def qseq2fastq_se(qseq)
+          #         qseq = qseq_line.split #logic here
+          "@#{qseq[0]}:#{qseq[2]}:#{qseq[3]}:#{qseq[4]}:#{qseq[5]}#0/\n#{qseq[8].gsub(/\./,'N')}\n+\n#{qseq[9]}" if qseq[10]=="1"
+        end
 
-        end #Qseq
-      end #Converter
-    end #Ngs
-  end #Bio
+      end #Qseq
+    end #Converter
+  end #Ngs
+end #Bio

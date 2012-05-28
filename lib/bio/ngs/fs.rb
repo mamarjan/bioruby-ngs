@@ -7,14 +7,14 @@ module Bio
       class << self
         # Write a file 'merged' which is the concatenation of multipes fastq.gz 'files'
         # files is an array of filenames
-  	    def cat(files, merged)
+        def cat(files, merged)
             if files.is_a? Array
               File.open(merged,'wb') do |fmerge|
                 files.each do |fname|
                   File.open(fname,'rb:binary') do |file|
-                  	while line = file.gets
-                  		fmerge << line
-                  	end
+                    while line = file.gets
+                      fmerge << line
+                    end
                   end #read
                 end #each
               end #write
